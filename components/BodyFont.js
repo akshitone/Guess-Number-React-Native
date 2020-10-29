@@ -9,6 +9,7 @@ const styles = StyleSheet.create({
   body: {
     fontSize: 24,
     fontFamily: "game-font",
+    color: "black",
   },
 });
 

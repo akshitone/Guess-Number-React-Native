@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   headerTitle: {
-    color: "black",
+    color: "white",
     fontSize: 40,
     fontFamily: "game-font",
   },

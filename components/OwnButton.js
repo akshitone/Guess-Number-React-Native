@@ -2,7 +2,6 @@ import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import Colors from "../constants/Colors";
-
 const OwnButton = (props) => {
   return (
     <TouchableOpacity activeOpacity={0.7} onPress={props.onPress}>
@@ -12,7 +11,6 @@ const OwnButton = (props) => {
     </TouchableOpacity>
   );
 };
-
 const styles = StyleSheet.create({
   button: {
     backgroundColor: Colors.primary,
