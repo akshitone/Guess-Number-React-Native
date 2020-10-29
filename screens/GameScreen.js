@@ -1,9 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Alert, Button, StyleSheet, Text, View } from "react-native";
+import { Alert, StyleSheet, View, Dimensions } from "react-native";
 
 import NumberContainer from "../components/NumberContainer";
 import Card from "../components/Card";
 import BodyText from "../components/BodyFont";
+import OwnButton from "../components/OwnButton";
+import { Ionicons } from "@expo/vector-icons";
 
 const generateRandomBetween = (min, max, exclude) => {
   min = Math.ceil(min);
@@ -21,11 +23,29 @@ const GameScreen = (props) => {
     generateRandomBetween(1, 100, props.userChoice)
   );
   const [rounds, setRounds] = useState(0);
+  const [deviceHeight, setDeviceHeight] = useState(
+    Dimensions.get("window").height
+  );
+  const [buttonWidth, setButtonWidth] = useState(
+    Dimensions.get("window").width / 10
+  );
 
   const currentLow = useRef(1);
   const currentHigh = useRef(100);
 
   const { userChoice, onGameOver } = props;
+
+  useEffect(() => {
+    const updateLayout = () => {
+      setDeviceHeight(Dimensions.get("window").height);
+      setButtonWidth(Dimensions.get("window").width / 10);
+    };
+
+    Dimensions.addEventListener("change", updateLayout);
+    return () => {
+      Dimensions.removeEventListener("change", updateLayout);
+    };
+  });
 
   useEffect(() => {
     if (currentGuess === userChoice) {
@@ -47,7 +67,7 @@ const GameScreen = (props) => {
     if (direction === "lower") {
       currentHigh.current = currentGuess;
     } else {
-      currentLow.current = currentGuess;
+      currentLow.current = currentGuess + 1;
     }
     const nxtNumber = generateRandomBetween(
       currentLow.current,
@@ -58,16 +78,46 @@ const GameScreen = (props) => {
     setRounds((curRounds) => curRounds + 1);
   };
 
+  if (deviceHeight < 500) {
+    return (
+      <View style={styles.screen}>
+        <BodyText>Opponent's Guess</BodyText>
+        <View style={styles.controls}>
+          <View style={{ width: buttonWidth }}>
+            <OwnButton
+              title={<Ionicons name="md-remove" size={24} color="white" />}
+              onPress={nextGuessHandler.bind(this, "lower")}
+            />
+          </View>
+          <NumberContainer>{currentGuess}</NumberContainer>
+          <View style={{ width: buttonWidth }}>
+            <OwnButton
+              title={<Ionicons name="md-add" size={24} color="white" />}
+              onPress={nextGuessHandler.bind(this, "higher")}
+            />
+          </View>
+        </View>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.screen}>
       <BodyText>Opponent's Guess</BodyText>
       <NumberContainer>{currentGuess}</NumberContainer>
       <Card style={styles.buttonContainer}>
-        <Button title="Lower" onPress={nextGuessHandler.bind(this, "lower")} />
-        <Button
-          title="Higher"
-          onPress={nextGuessHandler.bind(this, "higher")}
-        />
+        <View style={{ width: buttonWidth }}>
+          <OwnButton
+            title={<Ionicons name="md-remove" size={24} color="white" />}
+            onPress={nextGuessHandler.bind(this, "lower")}
+          />
+        </View>
+        <View style={{ width: buttonWidth }}>
+          <OwnButton
+            title={<Ionicons name="md-add" size={24} color="white" />}
+            onPress={nextGuessHandler.bind(this, "higher")}
+          />
+        </View>
       </Card>
     </View>
   );
@@ -84,7 +134,13 @@ const styles = StyleSheet.create({
     padding: 20,
     width: "70%",
     justifyContent: "space-around",
-    marginTop: 20,
+    marginTop: Dimensions.get("window").height > 600 ? 20 : 5,
+  },
+  controls: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+    width: "50%",
   },
 });
 

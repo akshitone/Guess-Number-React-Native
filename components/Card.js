@@ -20,6 +20,7 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     shadowOpacity: 0.25,
     backgroundColor: "white",
+    marginVertical: 20,
   },
 });
 
